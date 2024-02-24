@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\BalanceController;
+use App\Http\Controllers\BalanceLineController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::view('/', 'welcome');
+
+Route::middleware('auth')->group(function () {
+    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::view('profile', 'profile')->name('profile');
+    Route::resource('/Assignment', AssignmentController::class)->only(['show', 'create', 'store', 'edit', 'update']);;
+    Route::resource('/profile', BalanceController::class)->only(['show', 'create', 'store', 'edit', 'update']);;
+    Route::resource('/profile', BalanceLineController::class)->only(['show', 'create', 'store', 'edit', 'update']);;
+    Route::resource('posts', SessionController::class)->only(['show', 'create', 'store', 'edit', 'update']);;
 });
+
+
+require __DIR__.'/auth.php';
