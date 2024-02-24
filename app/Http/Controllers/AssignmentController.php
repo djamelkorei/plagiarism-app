@@ -3,16 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignment;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentController extends Controller
 {
+
+
+    /**
+     * Instantiate a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:assignments.index')->only('index');
+        $this->middleware('permission:assignments.store')->only(['create', 'store']);
+        $this->middleware('permission:assignments.show')->only('show');
+        $this->middleware('permission:assignments.update')->only(['edit', 'update']);
+        $this->middleware('permission:assignments.destroy')->only('destroy');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('assignments');
     }
 
     /**

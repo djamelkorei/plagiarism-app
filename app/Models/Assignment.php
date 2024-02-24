@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class Assignment extends Model
 {
@@ -17,7 +19,16 @@ class Assignment extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-
+        'title',
+        'reference',
+        'class_reference',
+        'status',
+        'file_link',
+        'download_link',
+        'source',
+        'posted_at',
+        'issued_at',
+        'user_id'
     ];
 
     /**
@@ -33,7 +44,8 @@ class Assignment extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'posted_at' => 'datetime:y-m-d H:i',
+        'issued_at' => 'datetime:y-m-d H:i',
     ];
 
     /**
@@ -43,5 +55,4 @@ class Assignment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

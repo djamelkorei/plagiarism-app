@@ -28,6 +28,15 @@ $logout = function (Logout $logout) {
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')" wire:navigate>
+                        {{ __('Assignments') }}
+                    </x-nav-link>
+                </div>
+
+
             </div>
 
             <!-- Settings Dropdown -->
@@ -77,6 +86,9 @@ $logout = function (Logout $logout) {
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')" wire:navigate>
+                {{ __('Assignments') }}
             </x-responsive-nav-link>
         </div>
 
