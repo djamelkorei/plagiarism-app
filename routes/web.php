@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\BalanceController;
-use App\Http\Controllers\BalanceLineController;
 use App\Http\Controllers\SessionController;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome');
+Route::get('/', function () {
+    return Redirect::to('/login');
+})->middleware('guest');
+
 
 Route::middleware('auth')->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');

@@ -12,16 +12,22 @@ usesFileUploads();
 state([
     'title' => '',
     'file' => '',
+    'user_id' => '',
     'search' => '',
     'query' => '',
 ]);
 
-rules(['title' => 'required', 'file' => 'required|file|mimes:pdf']);
+rules([
+    'title' => 'required', 'file' => 'required|file|mimes:pdf',
+]);
 
 with( fn () => ['assignments' => function () {
     $query = Assignment::select('*');
     if( strlen($this->query) > 3) {
         $query->where('title', 'LIKE', "%{$this->query}%");
+    }
+    if (Auth::user()->hasRole('user')) {
+        $query->where('user_id', Auth::user()->id);
     }
     return $query->orderBy('posted_at', 'desc')->paginate(10);
 }] );
@@ -31,14 +37,36 @@ $searchFilter = function () {
 };
 
 $submit = function () {
+
     $this->validate();
-    $assignment = Assignment::create([
-        'title' => $this->title,
-        'status' => \App\Models\Enums\AssignmentStatus::WAITING,
-        'user_id' => Auth::user()->id,
-        'posted_at' => \Carbon\Carbon::now(),
-        'file_link' => 'hello',
-    ]);
+    $user_id = (Auth::user()->hasRole('user')) ? Auth::user()->id : $this->user_id;
+
+    $balance = \App\Models\Balance::where('user_id', $user_id)->first();
+    if($balance->credit <= 0) {
+        $validator = \Illuminate\Support\Facades\Validator::make([], []);
+        $validator->errors()->add('file', 'Balance credit is 0. charge it and try again.');
+        throw new ValidationException($validator);
+    }
+
+    try {
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        Assignment::create([
+            'title' => $this->title,
+            'status' => \App\Models\Enums\AssignmentStatus::WAITING,
+            'user_id' => $user_id,
+            'posted_at' => \Carbon\Carbon::now(),
+            'file_link' => 'hello',
+        ]);
+        \Illuminate\Support\Facades\DB::update( 'update balances set credit = (credit - 1), total_credit = (total_credit + 1) where user_id = ?', [$user_id]);
+        \Illuminate\Support\Facades\DB::commit();
+    } catch (Exception $exception) {
+        \Illuminate\Support\Facades\Log::error("", [
+            "code" => $exception->getCode(),
+            "message" => $exception->getMessage(),
+        ]);
+        \Illuminate\Support\Facades\DB::rollBack();
+    }
+
     $this->title = '';
     $this->file = '';
     $this->dispatch('close-modal');
@@ -58,7 +86,13 @@ $clean =  function ()
 
 <div x-data="{ modalOpen: false }" @keydown.escape.window="modalOpen = false" x-on:close-modal.window="modalOpen = false">
     <div class="flex align-items-center mb-4 gap-4 justify-between">
-        <x-primary-button @click="modalOpen=true">Create</x-primary-button>
+
+        @can('users.index')
+            <x-link-button href="{{ route('dashboard') }}">Dashboard</x-link-button>
+        @elsecannot('users.index')
+            <x-primary-button @click="modalOpen=true">Create</x-primary-button>
+        @endcan
+
         <div class="flex gap-1 align-items-center w-[30%] relative">
             <x-text-input wire:model="search" wire:keydown.debounce.400ms="searchFilter" id="title" class="block w-full" type="text" name="title" placeholder="search..."/>
             <svg class="h-5 w-5 absolute right-2 top-0 bottom-0 m-auto text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" ><g xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M20 20l-6-6"/><path d="M15 9.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"/></g></svg>
@@ -70,7 +104,9 @@ $clean =  function ()
                 <table>
                     <thead>
                     <tr>
+                        @can('users.index')
                         <th >USER</th>
+                        @endcan
                         <th >TITLE</th>
                         <th class="w-[200px]">POSTED DATE</th>
                         <th class="w-[200px]">ISSUED DATE</th>
@@ -82,9 +118,11 @@ $clean =  function ()
 
                     @foreach($assignments as $row)
                         <tr>
+                            @can('users.index')
                             <td class="md:w-[300px]">
                                 <a href="#" class="capitalize font-bold underline text-indigo-800">{{ $row->user->name }}</a>
                             </td>
+                            @endcan
                             <td class="md:w-[300px]">{{ $row->title }}</td>
                             <td>{{ $row->posted_at->format('Y-m-d H:i') ?? '-' }}</td>
                             <td>{{ isset($row) ? '-' : $row->issued_at->format('Y-m-d H:i')}}</td>
@@ -144,11 +182,21 @@ $clean =  function ()
                 <div class="relative w-auto">
                     <form wire:submit="submit" id="post-assignment">
 
+
+                        @can('users.index')
+                        <!-- Users -->
+                        <div class="mb-4">
+                            <x-input-label for="email" :value="__('User')"  class="mb-2"/>
+                            <x-text-input placeholder="select a user" wire:model="user_id" id="user_id" class="block mt-1 w-full" type="text" name="user_id" required autofocus/>
+                            <x-input-error :messages="$errors->get('User')" class="mt-2" />
+                        </div>
+                        @endcan
+
                         <!-- Title -->
                         <div class="mb-4">
                             <x-input-label for="email" :value="__('Title')"  class="mb-2"/>
                             <x-text-input placeholder="Enter a title" wire:model="title" id="title" class="block mt-1 w-full" type="text" name="title" required autofocus/>
-                            <x-input-error id="error-title" :messages="$errors->get('title')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
                         </div>
 
                         <!-- Title -->
@@ -180,7 +228,7 @@ $clean =  function ()
                                 </div>
                             @endif
 
-                            <x-input-error id="error-file" :messages="$errors->get('file')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('file')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">

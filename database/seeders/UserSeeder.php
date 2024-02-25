@@ -33,6 +33,15 @@ class UserSeeder extends Seeder
             ]
         ]);
 
+        DB::table('balances')->insert([
+            [
+                'credit' => 0,
+                'total_value' => 0,
+                'total_credit' => 0,
+                'user_id' => 2
+            ]
+        ]);
+
         DB::table('model_has_roles')->insert([
             ['role_id' => 1, 'model_type' => 'App\Models\User', 'model_id' => 1]
         ]);

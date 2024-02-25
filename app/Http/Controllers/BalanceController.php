@@ -12,7 +12,6 @@ class BalanceController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
