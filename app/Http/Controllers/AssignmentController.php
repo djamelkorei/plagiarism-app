@@ -16,11 +16,6 @@ class AssignmentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:assignments.index')->only('index');
-        $this->middleware('permission:assignments.store')->only(['create', 'store']);
-        $this->middleware('permission:assignments.show')->only('show');
-        $this->middleware('permission:assignments.update')->only(['edit', 'update']);
-        $this->middleware('permission:assignments.destroy')->only('destroy');
     }
 
     /**
@@ -28,7 +23,7 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        return view('assignments');
+        //
     }
 
     /**

@@ -527,13 +527,11 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                                 <x-input-error :messages="$errors->get('range')" class="mt-2"/>
                             </div>
                         @endif
-
                         <div class="flex items-center justify-end mt-4">
                             <x-primary-button class="ms-3">
                                 {{ __('Submit') }}
                             </x-primary-button>
                         </div>
-
                     </form>
                 </div>
             </div>
