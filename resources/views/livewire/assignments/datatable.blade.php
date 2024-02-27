@@ -2,7 +2,12 @@
 
 use App\Providers\RouteServiceProvider;
 use App\Models\Assignment;
+use App\Models\Balance;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use App\Models\Enums\AssignmentStatus;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use function Livewire\Volt\{rules, state,mount, form,layout, with, usesFileUploads, usesPagination};
 
@@ -18,7 +23,8 @@ state([
 ]);
 
 rules([
-    'title' => 'required', 'file' => 'required|file|mimes:pdf',
+    'title' => 'required',
+    'file' => 'required|file|mimes:pdf',
 ]);
 
 with( fn () => ['assignments' => function () {
@@ -41,30 +47,32 @@ $submit = function () {
     $this->validate();
     $user_id = (Auth::user()->hasRole('user')) ? Auth::user()->id : $this->user_id;
 
-    $balance = \App\Models\Balance::where('user_id', $user_id)->first();
+    $balance = Balance::where('user_id', $user_id)->first();
     if($balance->credit <= 0) {
         $validator = \Illuminate\Support\Facades\Validator::make([], []);
         $validator->errors()->add('file', 'Balance credit is 0. charge it and try again.');
         throw new ValidationException($validator);
     }
 
+    $path =  '';//$this->file->store('assignments', 's3');
+
     try {
-        \Illuminate\Support\Facades\DB::beginTransaction();
+        DB::beginTransaction();
         Assignment::create([
             'title' => $this->title,
-            'status' => \App\Models\Enums\AssignmentStatus::WAITING,
+            'status' => AssignmentStatus::WAITING,
             'user_id' => $user_id,
-            'posted_at' => \Carbon\Carbon::now(),
-            'file_link' => 'hello',
+            'posted_at' => Carbon::now(),
+            'file_link' => $path,
         ]);
-        \Illuminate\Support\Facades\DB::update( 'update balances set credit = (credit - 1), total_credit = (total_credit + 1) where user_id = ?', [$user_id]);
-        \Illuminate\Support\Facades\DB::commit();
+        DB::update( 'update balances set credit = (credit - 1), total_credit = (total_credit + 1) where user_id = ?', [$user_id]);
+        DB::commit();
     } catch (Exception $exception) {
-        \Illuminate\Support\Facades\Log::error("", [
+        Log::error("", [
             "code" => $exception->getCode(),
             "message" => $exception->getMessage(),
         ]);
-        \Illuminate\Support\Facades\DB::rollBack();
+        DB::rollBack();
     }
 
     $this->title = '';
