@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('credit')->default(0);
             $table->integer('value')->default(0);
-            $table->enum('status', ['PENDING', 'APPROVED']);
+            $table->enum('status', ['PENDING', 'APPROVED', 'REFUSED']);
             $table->foreignId('balance_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
