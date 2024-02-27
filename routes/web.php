@@ -3,8 +3,11 @@
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\SessionController;
+use App\Models\Assignment;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,13 @@ Route::middleware('auth')->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('assignments', 'assignments')->name('assignments');
     Route::view('profile', 'profile')->name('profile');
+    Route::get('assignments/{assignmentId}/download', function ($assignmentId) {
+        $assignment = Assignment::find($assignmentId);
+        if(isset($assignment) && $assignment->user_id == Auth::user()->id || Auth::user()->hasRole('super-admin')) {
+            return Storage::disk('s3')->response('assignments/CZmqbo0yvDhqZK7qp9jYT3ukdnLedVK2ZG0S2AVK.pdf');
+        }
+        return null;
+    })->name('profile');
 });
 
 

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\Enums\AssignmentStatus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use \Illuminate\Support\Facades\Storage;
 use function Livewire\Volt\{rules, state,mount, form,layout, with, usesFileUploads, usesPagination};
 
 usesPagination();
@@ -54,7 +55,7 @@ $submit = function () {
         throw new ValidationException($validator);
     }
 
-    $path =  '';//$this->file->store('assignments', 's3');
+    $path =  $this->file->store('assignments', 's3');
 
     try {
         DB::beginTransaction();
@@ -63,7 +64,7 @@ $submit = function () {
             'status' => AssignmentStatus::WAITING,
             'user_id' => $user_id,
             'posted_at' => Carbon::now(),
-            'file_link' => $path,
+            'file_link' => $path
         ]);
         DB::update( 'update balances set credit = (credit - 1), total_credit = (total_credit + 1) where user_id = ?', [$user_id]);
         DB::commit();
