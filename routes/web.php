@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\BalanceController;
-use App\Http\Controllers\SessionController;
 use App\Models\Assignment;
+use App\Services\ScraperService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -24,14 +22,18 @@ Route::get('/', function () {
     return Redirect::to('/login');
 })->middleware('guest');
 
+Route::get('/test', function () {
+    $scraper = new ScraperService();
+    return response()->json(['data' =>$scraper->getClasses()]);
+})->middleware('guest');
 
 Route::middleware('auth')->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::view('assignments', 'assignments')->name('assignments');
-    Route::view('profile', 'profile')->name('profile');
-    Route::get('assignments/{assignmentId}/download', function ($assignmentId) {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::view('/assignments', 'assignments')->name('assignments');
+    Route::view('/profile', 'profile')->name('profile');
+    Route::get('/assignments/{assignmentId}/download', function ($assignmentId) {
         $assignment = Assignment::find($assignmentId);
-        if(isset($assignment) && $assignment->user_id == Auth::user()->id || Auth::user()->hasRole('super-admin')) {
+        if (isset($assignment) && $assignment->user_id == Auth::user()->id || Auth::user()->hasRole('super-admin')) {
             return Storage::disk('s3')->response('assignments/CZmqbo0yvDhqZK7qp9jYT3ukdnLedVK2ZG0S2AVK.pdf');
         }
         return null;
@@ -39,4 +41,4 @@ Route::middleware('auth')->group(function () {
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
