@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\Assignment;
-use App\Services\ScraperService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Volt\Volt;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,14 +22,11 @@ Route::get('/', function () {
     return Redirect::to('/login');
 })->middleware('guest');
 
-Route::get('/test', function () {
-    $scraper = new ScraperService();
-    return response()->json(['data' =>$scraper->getClasses()]);
-})->middleware('guest');
-
 Route::middleware('auth')->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
-    Route::view('/assignments', 'assignments')->name('assignments');
+    Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
+    Volt::route('/assignments', 'pages.assignments')->name('assignments');
+    Volt::route('/accounts', 'pages.accounts')->name('accounts');
+    Volt::route('/users', 'pages.users')->name('users');
     Route::view('/profile', 'profile')->name('profile');
     Route::get('/assignments/{assignmentId}/download', function ($assignmentId) {
         $assignment = Assignment::find($assignmentId);
@@ -37,7 +34,7 @@ Route::middleware('auth')->group(function () {
             return Storage::disk('s3')->response('assignments/CZmqbo0yvDhqZK7qp9jYT3ukdnLedVK2ZG0S2AVK.pdf');
         }
         return null;
-    })->name('profile');
+    })->name('assignments.download');
 });
 
 
