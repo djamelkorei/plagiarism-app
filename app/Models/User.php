@@ -67,4 +67,9 @@ class User extends Authenticatable
         return $this->hasMany(Assignment::class);
     }
 
+    public function isActive()
+    {
+        return $this->active;
+    }
+
 }

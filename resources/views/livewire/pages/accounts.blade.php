@@ -94,11 +94,13 @@ $setPending = function ($id)  {
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="flex justify-end align-items-center">
-                                            <x-link-button href="#" class="gap-1" wire:click="setPending({{ $row->id }})">
-                                                process now
-                                            </x-link-button>
-                                        </div>
+                                        @if($row->status !== AccountStatus::PENDING)
+                                            <div class="flex justify-end align-items-center">
+                                                <x-link-button href="#" class="gap-1" wire:click="setPending({{ $row->id }})">
+                                                    process now
+                                                </x-link-button>
+                                            </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
