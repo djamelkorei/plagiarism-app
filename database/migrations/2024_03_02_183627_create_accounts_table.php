@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
+            $table->string('email');
             $table->string('password');
-            $table->enum('status', ['SUSPENDED', 'PENDING', 'ACTIVE'])->index('accounts_status');
+            $table->enum('status', ['SUSPENDED', 'PENDING', 'ACTIVE'])->default('PENDING')->index('accounts_status');
             $table->timestamps();
             $table->softDeletes();
         });
