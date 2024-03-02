@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sessions', function (Blueprint $table) {
+        Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('reference')->unique();
-            $table->string('class_reference')->unique();
-            $table->timestamp('expire_at')->index('sessions_expire_at');
+            $table->string('username');
+            $table->string('password');
+            $table->enum('status', ['SUSPENDED', 'PENDING', 'ACTIVE'])->index('accounts_status');
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('accounts');
     }
 };
