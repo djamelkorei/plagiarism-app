@@ -36,6 +36,7 @@ $logout = function (Logout $logout) {
                     </x-nav-link>
                 </div>
 
+                @role('super-admin')
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('accounts')" :active="request()->routeIs('accounts')" wire:navigate>
@@ -49,6 +50,7 @@ $logout = function (Logout $logout) {
                         {{ __('Users') }}
                     </x-nav-link>
                 </div>
+                @endrole
 
 
             </div>
@@ -106,6 +108,14 @@ $logout = function (Logout $logout) {
             <x-responsive-nav-link :href="route('assignments')" :active="request()->routeIs('assignments')" wire:navigate>
                 {{ __('Assignments') }}
             </x-responsive-nav-link>
+            @role('super-admin')
+            <x-responsive-nav-link :href="route('accounts')" :active="request()->routeIs('accounts')" wire:navigate>
+                {{ __('Accounts') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users')" :active="request()->routeIs('users')" wire:navigate>
+                {{ __('Users') }}
+            </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->
