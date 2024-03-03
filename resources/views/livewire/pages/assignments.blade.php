@@ -62,7 +62,7 @@ $submit = function () {
         DB::beginTransaction();
         Assignment::create([
             'title' => $this->title,
-            'status' => AssignmentStatus::WAITING,
+            'status' => AssignmentStatus::PENDING,
             'user_id' => $user_id,
             'posted_at' => Carbon::now(),
             'file_link' => $path
@@ -160,7 +160,7 @@ $clean = function () {
                                     <td>
                                         <div class="flex justify-center align-items-center">
                                             @if($row->status  === AssignmentStatus::COMPLETED)
-                                                <x-link-button href="#" class="gap-1">
+                                                <x-link-button href="{{ route('assignments.download', ['assignmentId' => $row->id]) }}" class="gap-1">
                                                     <span>download</span>
                                                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none"
                                                          stroke="currentColor" viewBox="0 0 24 24">

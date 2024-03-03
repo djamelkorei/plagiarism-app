@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('status', ['WAITING', 'PENDING', 'COMPLETED', 'IGNORED'])->index('assignments_status');
+            $table->enum('status', ['PENDING', 'COMPLETED', 'IGNORED'])->index('assignments_status');
             $table->string('file_link');
             $table->string('download_link')->nullable();
             $table->enum('source', ['API', 'WEB'])->default('API');
             $table->timestamp('posted_at')->nullable();
             $table->timestamp('issued_at')->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('attribution_id')->constrained();
+            $table->foreignId('attribution_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

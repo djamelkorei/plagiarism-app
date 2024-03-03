@@ -28,8 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/profile', 'profile')->name('profile');
     Route::get('/assignments/{assignmentId}/download', function ($assignmentId) {
         $assignment = Assignment::find($assignmentId);
-        if (isset($assignment) && $assignment->user_id == Auth::user()->id || Auth::user()->hasRole('super-admin')) {
-            return Storage::disk('s3')->response('assignments/CZmqbo0yvDhqZK7qp9jYT3ukdnLedVK2ZG0S2AVK.pdf');
+        if (isset($assignment) && ($assignment->user_id == Auth::user()->id || Auth::user()->hasRole('super-admin'))) {
+            return Storage::disk('s3')->response($assignment->download_link);
         }
         return null;
     })->name('assignments.download');

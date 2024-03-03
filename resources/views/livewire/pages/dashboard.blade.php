@@ -313,11 +313,13 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                                             @elseif($row->status  === BalanceLineStatus::REFUSED)
                                                 <span class="text-gray-500 w-[135px] pl-4">ignored</span>
                                             @else
-                                                <x-primary-button
-                                                    wire:click="beforeOpenModelApprove({{ $row->id . ',\''. $row->user_name . '\','. $row->value . ','. $row->credit . ',\''. $row->created_at->format('Y-m-d H:i') .'\','.  $row->balance_id }})"
-                                                    class="gap-1">
-                                                    <span>approve</span>
-                                                </x-primary-button>
+                                               @can('users.index')
+                                                    <x-primary-button
+                                                        wire:click="beforeOpenModelApprove({{ $row->id . ',\''. $row->user_name . '\','. $row->value . ','. $row->credit . ',\''. $row->created_at->format('Y-m-d H:i') .'\','.  $row->balance_id }})"
+                                                        class="gap-1">
+                                                        <span>approve</span>
+                                                    </x-primary-button>
+                                                @endcan
                                             @endif
                                         </div>
                                     </td>
