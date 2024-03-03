@@ -116,17 +116,17 @@ $handleSuspend = function ($id)  {
                                         </div>
                                     </td>
                                     <td>
-                                        @if($row->status === AccountStatus::ACTIVE)
+                                        @if($row->status === AccountStatus::SUSPENDED)
                                             <div class="flex justify-end align-items-center">
                                                 <x-danger-button href="#" class="gap-1 " wire:click="handlePending({{ $row->id }})">
-                                                    suspend
+                                                    process now
                                                 </x-danger-button>
                                             </div>
                                         @endif
-                                        @if($row->status === AccountStatus::SUSPENDED)
+                                        @if($row->status === AccountStatus::ACTIVE)
                                             <div class="flex justify-end align-items-center">
                                                 <x-primary-button href="#" class="gap-1" wire:click="handleSuspend({{ $row->id }})">
-                                                    process now
+                                                    suspend
                                                 </x-primary-button>
                                             </div>
                                         @endif
