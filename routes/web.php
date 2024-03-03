@@ -25,8 +25,6 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
     Volt::route('/assignments', 'pages.assignments')->name('assignments');
-    Volt::route('/accounts', 'pages.accounts')->name('accounts');
-    Volt::route('/users', 'pages.users')->name('users');
     Route::view('/profile', 'profile')->name('profile');
     Route::get('/assignments/{assignmentId}/download', function ($assignmentId) {
         $assignment = Assignment::find($assignmentId);
@@ -35,6 +33,14 @@ Route::middleware('auth')->group(function () {
         }
         return null;
     })->name('assignments.download');
+
+    Volt::route('/accounts', 'pages.accounts')
+        ->middleware('role:super-admin')
+        ->name('accounts');
+
+    Volt::route('/users', 'pages.users')
+        ->middleware('role:super-admin')
+        ->name('users');
 });
 
 

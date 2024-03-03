@@ -106,9 +106,9 @@ $activateUser = function ($id)  {
                                     <td>
                                         @if($row->role === 'user')
                                             <div class="flex justify-end align-items-center">
-                                                <x-link-button href="#" class="gap-1" wire:click="activateUser({{ $row->id }})">
+                                                <x-primary-button class="gap-1" wire:click="activateUser({{ $row->id }})">
                                                     {{ $row->active ? 'suspend' : 'activate' }}
-                                                </x-link-button>
+                                                </x-primary-button>
                                             </div>
                                         @endif
                                     </td>

@@ -2,8 +2,11 @@
 
 use App\Models\User;
 use App\Models\Account;
+use App\Models\Enums\AttributionStatus;
 use App\Models\Enums\AccountStatus;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use function Livewire\Volt\{layout, rules, state,mount, form, with, usesFileUploads, usesPagination};
 
 layout('layouts.app');
@@ -44,11 +47,30 @@ $submit = function () {
     $this->dispatch('close-modal');
 };
 
-$setPending = function ($id)  {
+$handlePending = function ($id)  {
     $account = Account::find($id);
     $account->status = AccountStatus::PENDING;
     $account->save();
-}
+};
+
+$handleSuspend = function ($id)  {
+    try {
+        DB::beginTransaction();
+        $account = Account::find($id);
+        $account->status = AccountStatus::SUSPENDED;
+        $account->save();
+        DB::table('attributions')
+            ->where('account_id', $id)
+            ->update(array('status' => AttributionStatus::SUSPENDED));
+        DB::commit();
+    } catch (Exception $exception) {
+        Log::error("", [
+            "code" => $exception->getCode(),
+            "message" => $exception->getMessage(),
+        ]);
+        DB::rollBack();
+    }
+};
 
 ?>
 
@@ -94,11 +116,18 @@ $setPending = function ($id)  {
                                         </div>
                                     </td>
                                     <td>
-                                        @if($row->status !== AccountStatus::PENDING)
+                                        @if($row->status === AccountStatus::ACTIVE)
                                             <div class="flex justify-end align-items-center">
-                                                <x-link-button href="#" class="gap-1" wire:click="setPending({{ $row->id }})">
+                                                <x-danger-button href="#" class="gap-1 " wire:click="handlePending({{ $row->id }})">
+                                                    suspend
+                                                </x-danger-button>
+                                            </div>
+                                        @endif
+                                        @if($row->status === AccountStatus::SUSPENDED)
+                                            <div class="flex justify-end align-items-center">
+                                                <x-primary-button href="#" class="gap-1" wire:click="handleSuspend({{ $row->id }})">
                                                     process now
-                                                </x-link-button>
+                                                </x-primary-button>
                                             </div>
                                         @endif
                                     </td>
