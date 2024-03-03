@@ -123,7 +123,7 @@ $handleSuspend = function ($id)  {
                                                 </x-danger-button>
                                             </div>
                                         @endif
-                                        @if($row->status === AccountStatus::ACTIVE)
+                                        @if($row->status !== AccountStatus::SUSPENDED)
                                             <div class="flex justify-end align-items-center">
                                                 <x-primary-button href="#" class="gap-1" wire:click="handleSuspend({{ $row->id }})">
                                                     suspend

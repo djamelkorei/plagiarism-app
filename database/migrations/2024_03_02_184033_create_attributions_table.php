@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('attributions', function (Blueprint $table) {
             $table->id();
-            $table->string('reference')->index('attributions_reference');
+            $table->string('reference')->unique('attributions_reference');
             $table->enum('status', ['SUSPENDED', 'ACTIVE'])->index('attributions_status');
             $table->foreignId('account_id')->constrained();
             $table->integer('credit')->default(3);
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(['reference', 'account_id']);
         });
     }
 
