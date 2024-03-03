@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('credit')->default(3);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['reference', 'account_id']);
         });
     }
 
