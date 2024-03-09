@@ -36,23 +36,41 @@ with( fn () => ['accounts' => function () {
 }]);
 
 
+/**
+ * Submit Form
+ *
+ * @return void
+ */
 $submit = function () {
 
-    $validated = $this->validate();
-    $validated['status'] = AccountStatus::PENDING;
-    $account = Account::create($validated);
+    $form = $this->validate();
 
-    $this->email = '';
-    $this->passowrd = '';
+    $validated['status'] = AccountStatus::PENDING;
+    Account::create($validated);
+
+    $this->reset('email', 'password', 'type');
     $this->dispatch($this->modalEvent);
 };
 
+/**
+ * Handle pending status
+ *
+ * @param $id {number}
+ * @return void
+ */
 $handlePending = function ($id)  {
     $account = Account::find($id);
     $account->status = AccountStatus::PENDING;
     $account->save();
 };
 
+
+/**
+ * Handle suspend status
+ *
+ * @param $id {number}
+ * @return void
+ */
 $handleSuspend = function ($id)  {
     try {
         DB::beginTransaction();
@@ -132,7 +150,6 @@ $handleSuspend = function ($id)  {
     </x-card>
 
     <x-modal name="modalCreateAccount" :event="$modalEvent" title="Create new account">
-
         <form wire:submit="submit" id="post-account">
 
             <div class="mb-4">
