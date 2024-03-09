@@ -4,7 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Account
+ *
+ * @mixin Builder
+ */
 class Account extends Model
 {
     use HasFactory;
@@ -32,5 +38,5 @@ class Account extends Model
      * @var array<string, string>
      */
     protected $casts = [];
-    
+
 }
