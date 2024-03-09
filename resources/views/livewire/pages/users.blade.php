@@ -11,6 +11,7 @@ state([
     // Form
     'name' => '',
     'email' => '',
+    // Other
     'search' => '',
     'modalEvent' => 'close-modal-create-user'
 ]);
@@ -120,7 +121,7 @@ $activateUser = function ($id) {
     </x-card>
 
     <x-modal name="modalCreateUser" :event="$modalEvent" title="Create new user">
-        <form wire:submit="submit" id="post-user">
+        <form wire:submit="submit">
 
             <div class="mb-4">
                 <!-- Name -->

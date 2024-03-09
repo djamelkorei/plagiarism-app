@@ -150,7 +150,7 @@ $handleSuspend = function ($id)  {
     </x-card>
 
     <x-modal name="modalCreateAccount" :event="$modalEvent" title="Create new account">
-        <form wire:submit="submit" id="post-account">
+        <form wire:submit="submit">
 
             <div class="mb-4">
                 <!-- Email -->
