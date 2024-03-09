@@ -25,7 +25,7 @@ state([
     'file' => '',
     // Others
     'search' => '',
-    'modalEvent' => 'close-modal-create-assignment'
+    'modalEventClose' => 'close-modal-create-assignment'
 ]);
 
 rules([
@@ -83,7 +83,7 @@ $submit = function () {
     }
 
     $this->reset('title', 'file');
-    $this->dispatch($this->modalEvent);
+    $this->dispatch($this->modalEventClose);
 };
 
 
@@ -171,7 +171,7 @@ $resetFile = function () {
         {{ $assignments->links() }}
     </x-card>
 
-    <x-modal name="modalCreateAssignment" :event="$modalEvent" title="Create new assignment">
+    <x-modal name="modalCreateAssignment" :event="$modalEventClose" title="Create new assignment">
         <form wire:submit="submit">
 
             <div class="mb-4">

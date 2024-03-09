@@ -19,7 +19,7 @@ state([
     'type' => '',
     // Others
     'search' => '',
-    'modalEvent' => 'close-modal-create-account'
+    'modalEventClose' => 'close-modal-create-account'
 ]);
 
 rules([
@@ -49,7 +49,7 @@ $submit = function () {
     Account::create($validated);
 
     $this->reset('email', 'password', 'type');
-    $this->dispatch($this->modalEvent);
+    $this->dispatch($this->modalEventClose);
 };
 
 /**
@@ -149,7 +149,7 @@ $handleSuspend = function ($id)  {
         {{ $accounts->links() }}
     </x-card>
 
-    <x-modal name="modalCreateAccount" :event="$modalEvent" title="Create new account">
+    <x-modal name="modalCreateAccount" :event="$modalEventClose" title="Create new account">
         <form wire:submit="submit">
 
             <div class="mb-4">

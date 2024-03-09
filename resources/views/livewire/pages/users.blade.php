@@ -13,7 +13,7 @@ state([
     'email' => '',
     // Other
     'search' => '',
-    'modalEvent' => 'close-modal-create-user'
+    'modalEventClose' => 'close-modal-create-user'
 ]);
 
 rules([
@@ -46,7 +46,7 @@ $submit = function () {
     $user->assignRole('user');
 
     $this->reset('name', 'email');
-    $this->dispatch($this->modalEvent);
+    $this->dispatch($this->modalEventClose);
 };
 
 /**
@@ -92,16 +92,14 @@ $activateUser = function ($id) {
                         <td class="capitalize font-bold">{{ $row->name }}</td>
                         <td>{{ $row->email }}</td>
                         <td>
-                            <div class="inline-flex align-items-center justify-center px-3 py-2 rounded-md
-                                            {{ $row->role === 'user' ? 'bg-emerald-300' : 'bg-black text-white'  }} font-weight-bolder text-xs">
+                            <x-badge class="{{ $row->role === 'user' ? 'bg-emerald-300' : 'bg-black text-white'  }}">
                                 {{ $row->role }}
-                            </div>
+                            </x-badge>
                         </td>
                         <td>
-                            <div class="inline-flex align-items-center justify-center px-3 py-2 rounded-md
-                                            {{ $row->active ? 'bg-emerald-300' : 'bg-orange-300'  }} font-weight-bolder text-xs">
+                            <x-badge class="{{ $row->active ? 'bg-emerald-300' : 'bg-orange-300'  }}">
                                 {{ $row->active ? 'active' : 'suspended' }}
-                            </div>
+                            </x-badge>
                         </td>
                         <td>
                             @if($row->role === 'user')
@@ -120,7 +118,7 @@ $activateUser = function ($id) {
         {{ $users->links() }}
     </x-card>
 
-    <x-modal name="modalCreateUser" :event="$modalEvent" title="Create new user">
+    <x-modal name="modalCreateUser" :event="$modalEventClose" title="Create new user">
         <form wire:submit="submit">
 
             <div class="mb-4">
