@@ -23,6 +23,8 @@ class Account extends Model
     protected $fillable = [
         'email',
         'password',
+        'status',
+        'type',
     ];
 
     /**

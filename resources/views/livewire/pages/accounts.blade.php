@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Models\Account;
 use App\Models\Enums\AttributionStatus;
+use App\Models\Enums\AccountType;
 use App\Models\Enums\AccountStatus;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +21,12 @@ state([
     // Others
     'search' => '',
     'modalEventClose' => 'close-modal-create-account'
-]);
+])->url(as: 'q', history: true, keep: false);
 
 rules([
     'email' => 'required|email',
     'password' => 'required',
+    'type' => 'required',
 ]);
 
 with( fn () => ['accounts' => function () {
@@ -43,7 +45,7 @@ with( fn () => ['accounts' => function () {
  */
 $submit = function () {
 
-    $form = $this->validate();
+    $validated = $this->validate();
 
     $validated['status'] = AccountStatus::PENDING;
     Account::create($validated);
@@ -99,17 +101,18 @@ $handleSuspend = function ($id)  {
 <x-container x-data="{ modalCreateAccount: false }">
 
     <div class="flex align-items-center mb-4 gap-4 justify-between">
-        <x-primary-button @click="modalCreateAccount=true">Create</x-primary-button>
+        <x-primary-button @click="modalCreateAccount=true">add account</x-primary-button>
         <x-filter-search-input model="search" class="w-[30%]"/>
     </div>
 
     <x-card>
-        <div class="h-[525px] mb-3">
+        <div class="h-[565px]">
             <table>
                 <thead>
                 <tr>
                     <th>EMAIL</th>
                     <th>PASSWORD</th>
+                    <th>TYPE</th>
                     <th>STATUS</th>
                     <th class="text-right">ACTIONS</th>
                 </tr>
@@ -119,6 +122,11 @@ $handleSuspend = function ($id)  {
                     <tr>
                         <td>{{ $row->email }}</td>
                         <td>{{ $row->password }}</td>
+                        <td>
+                            <x-badge class="{{ $row->type === AccountType::INSTRUCTOR  ? 'bg-gray-300' : 'bg-gray-100' }}">
+                                {{ $row->type }}
+                            </x-badge>
+                        </td>
                         <td>
                             <x-badge class="{{ $row->status === AccountStatus::ACTIVE  ? 'bg-emerald-300' : ($row->status === AccountStatus::PENDING ? 'bg-orange-300' : 'bg-red-300') }}">
                                 {{ $row->status === AccountStatus::ACTIVE ? 'active' : ($row->status === AccountStatus::PENDING ? 'pending' : 'suspended') }}
@@ -170,7 +178,7 @@ $handleSuspend = function ($id)  {
                 <!-- Name -->
                 <div class="mb-4">
                     <x-input-label for="text" :value="__('Type')"  class="mb-2"/>
-                    <x-select-input :options="['instructor' => 'instructor', 'student' => 'student']" placeholder="Select type" wire:model="type" id="type" class="block mt-1 w-full"  name="type" required/>
+                    <x-select-input :options="[AccountType::INSTRUCTOR => AccountType::INSTRUCTOR]" wire:model="type" id="type" class="block mt-1 w-full"  name="type" required/>
                     <x-input-error :messages="$errors->get('type')" class="mt-2" />
                 </div>
             </div>
