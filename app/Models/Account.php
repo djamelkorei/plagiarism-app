@@ -25,6 +25,8 @@ class Account extends Model
         'password',
         'status',
         'type',
+        'stateless',
+        'class_id'
     ];
 
     /**

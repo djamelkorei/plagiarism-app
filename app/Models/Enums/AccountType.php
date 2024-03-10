@@ -4,6 +4,6 @@ namespace App\Models\Enums;
 
 enum AccountType: string
 {
-    const INSTRUCTOR = 'instructor';
-    const STUDENT = 'student';
+    const INSTRUCTOR = 'INSTRUCTOR';
+    const STUDENT = 'STUDENT';
 }

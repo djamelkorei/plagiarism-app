@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('email');
             $table->string('password');
             $table->enum('status', ['SUSPENDED', 'PENDING', 'ACTIVE'])->default('PENDING')->index('accounts_status');
+            $table->enum('type', ['INSTRUCTOR', 'STUDENT']);
+            $table->boolean('stateless')->default(false);
+            $table->integer('class_id');
             $table->timestamps();
             $table->softDeletes();
         });

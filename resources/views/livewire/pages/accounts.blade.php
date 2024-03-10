@@ -18,6 +18,8 @@ state([
     'email' => '',
     'password' => '',
     'type' => '',
+    'class_id' => '',
+    'stateless' => '',
     // Others
     'search' => '',
     'modalEventClose' => 'close-modal-create-account'
@@ -27,6 +29,7 @@ rules([
     'email' => 'required|email',
     'password' => 'required',
     'type' => 'required',
+    'class_id' => 'required',
 ]);
 
 with( fn () => ['accounts' => function () {
@@ -47,10 +50,11 @@ $submit = function () {
 
     $validated = $this->validate();
 
-    $validated['status'] = AccountStatus::PENDING;
+    $validated['status'] = $this->stateless == '1' ? AccountStatus::ACTIVE : AccountStatus::PENDING;
+    $validated['stateless'] = $this->stateless == '1';
     Account::create($validated);
 
-    $this->reset('email', 'password', 'type');
+    $this->reset('email', 'password', 'type', 'class_id','stateless');
     $this->dispatch($this->modalEventClose);
 };
 
@@ -114,6 +118,8 @@ $handleSuspend = function ($id)  {
                     <th>PASSWORD</th>
                     <th>TYPE</th>
                     <th>STATUS</th>
+                    <th>CLASS ID</th>
+                    <th>STATELESS</th>
                     <th class="text-right">ACTIONS</th>
                 </tr>
                 </thead>
@@ -130,6 +136,14 @@ $handleSuspend = function ($id)  {
                         <td>
                             <x-badge class="{{ $row->status === AccountStatus::ACTIVE  ? 'bg-emerald-300' : ($row->status === AccountStatus::PENDING ? 'bg-orange-300' : 'bg-red-300') }}">
                                 {{ $row->status === AccountStatus::ACTIVE ? 'active' : ($row->status === AccountStatus::PENDING ? 'pending' : 'suspended') }}
+                            </x-badge>
+                        </td>
+                        <td>
+                           <span class="font-bold"># {{ $row->class_id }}</span>
+                        </td>
+                        <td>
+                            <x-badge class="{{ $row->stateless ? 'bg-emerald-300' : 'bg-orange-300' }}">
+                                {{ $row->stateless ? 'YES' : 'NO' }}
                             </x-badge>
                         </td>
                         <td>
@@ -168,19 +182,36 @@ $handleSuspend = function ($id)  {
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
-                <!-- Name -->
+                <!-- Password -->
                 <div class="mb-4">
                     <x-input-label for="text" :value="__('Password')"  class="mb-2"/>
                     <x-text-input placeholder="Enter a password" wire:model="password" id="password" class="block mt-1 w-full" type="text" name="password" required/>
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
-                <!-- Name -->
+                <!-- Type -->
                 <div class="mb-4">
                     <x-input-label for="text" :value="__('Type')"  class="mb-2"/>
                     <x-select-input :options="[AccountType::INSTRUCTOR => AccountType::INSTRUCTOR]" wire:model="type" id="type" class="block mt-1 w-full"  name="type" required/>
                     <x-input-error :messages="$errors->get('type')" class="mt-2" />
                 </div>
+
+                <!-- Class ID -->
+                <div class="mb-4">
+                    <x-input-label for="text" :value="__('Class ID')"  class="mb-2"/>
+                    <x-text-input placeholder="Enter a class ID" wire:model="class_id" id="classId" class="block mt-1 w-full" type="text" name="classId" required/>
+                    <x-input-error :messages="$errors->get('class_id')" class="mt-2" />
+                </div>
+
+                <!-- Remember Me -->
+                <div class="block mt-4">
+                    <label for="stateless" class="inline-flex items-center">
+                        <input wire:model="stateless" value="1" id="stateless" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="stateless">
+                        <span class="ms-2 text-sm text-gray-600">{{ __('Stateless') }}</span>
+                    </label>
+                </div>
+
+
             </div>
 
             <div class="flex items-center justify-end">
