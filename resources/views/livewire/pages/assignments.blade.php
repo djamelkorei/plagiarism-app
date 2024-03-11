@@ -104,7 +104,7 @@ $resetFile = function () {
         @can('users.index')
             <x-link-button href="{{ route('dashboard') }}">Dashboard</x-link-button>
         @elsecannot('users.index')
-            <x-primary-button @click="modalOpen=true">Create</x-primary-button>
+            <x-primary-button @click="modalCreateAssignment=true">add assignment</x-primary-button>
         @endcan
 
         <x-filter-search-input model="search" class="w-[30%]"/>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('status', ['PENDING', 'COMPLETED', 'IGNORED'])->index('assignments_status');
+            $table->enum('status', ['PENDING', 'PROCESSING', 'COMPLETED', 'IGNORED'])->index('assignments_status');
             $table->string('file_link');
             $table->string('download_link')->nullable();
             $table->enum('source', ['API', 'WEB'])->default('API');
