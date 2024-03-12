@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('status', ['PENDING', 'PROCESSING', 'COMPLETED', 'IGNORED'])->index('assignments_status');
             $table->string('file_link');
             $table->string('download_link')->nullable();
+            $table->integer('similarity')->nullable();
             $table->enum('source', ['API', 'WEB'])->default('API');
             $table->timestamp('posted_at')->nullable();
             $table->timestamp('issued_at')->nullable();
