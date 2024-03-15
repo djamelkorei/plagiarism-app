@@ -89,6 +89,7 @@ $submit = function () {
 
 $resetFile = function () {
     $this->reset('file');
+    $this->resetValidation('file');
 };
 
 ?>
@@ -190,11 +191,17 @@ $resetFile = function () {
                 </div>
 
                 <!-- File -->
-                <div class="mb-4">
+                <div class="mb-4"
+                     x-data="{ isUploading: false, progress: 0 }"
+                     x-on:livewire-upload-start="isUploading = true"
+                     x-on:livewire-upload-finish="isUploading = false"
+                     x-on:livewire-upload-error="isUploading = false"
+                     x-on:livewire-upload-progress="progress = $event.detail.progress"
+                >
                     <x-input-label for="email" :value="__('Document')" class="mb-2"/>
-                    <div class="flex items-center justify-center w-full">
+                    <div class="flex items-center justify-center w-full mb-2">
                         <label for="file"
-                               class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-indigo-50 ">
+                               class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300  rounded-lg  @if($file)  bg-gray-50 @else border-dashed cursor-pointer hover:bg-indigo-50 @endif">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                 <svg class="w-8 h-8 mb-4" aria-hidden="true"
                                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -202,28 +209,42 @@ $resetFile = function () {
                                           stroke-linejoin="round" stroke-width="2"
                                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                 </svg>
-                                <p class="mb-2 text-sm"><span
-                                        class="font-semibold">Click to upload</span> or drag and drop
-                                </p>
-                                <p class="text-xs">PDF Files</p>
+
+                                @if($file)
+                                    <p class="text-sm"><b>Delete</b> file to upload another one</p>
+                                @else
+                                    <p class="mb-2 text-sm"><span
+                                            class="font-semibold">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p class="text-xs">PDF File</p>
+                                @endif
+
                             </div>
-                            <input wire:model="file" id="file" type="file" class="hidden"/>
+                            <input wire:model="file" @if($file) readonly disabled @endif id="file" type="file" class="hidden"/>
                         </label>
                     </div>
+
+                    <!-- Progress Bar -->
+                    <div x-show="isUploading" class="relative w-full h-3 overflow-hidden rounded-full bg-neutral-100">
+                        <span x-bind:style="'width:' + progress + '%'" class="absolute w-24 h-full duration-300 ease-linear bg-neutral-900" x-cloak></span>
+                    </div>
+
                     @if(isset($file) && $file  != '')
                         <div
-                            class="flex items-center justify-between py-2 mt-2 rounded-md bg-gray-25 mb-4">
+                            class="flex items-center justify-between mb-4 bg-gray-100 p-1 rounded-md">
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                           d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13"/>
                                 </svg>
-                                <span class="text-gray-600">file uploaded</span>
+                                <span class="text-gray-600 text-sm">file uploaded</span>
                             </div>
                             <button wire:click="resetFile"
                                     class="inline-flex items-center px-2 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                delete
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
                             </button>
                         </div>
                     @endif
