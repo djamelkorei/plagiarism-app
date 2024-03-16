@@ -22,13 +22,18 @@ rules([
 ]);
 
 with(fn() => ['users' => function () {
+
+    if(!auth()->user()->hasRole('super-admin')) {
+        return [];
+    }
+
     $query = User::selectRaw('users.id, users.name, users.email, users.active, roles.name as role')
         ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
         ->leftJoin('roles', 'roles.id', '=', 'model_has_roles.role_id');
     if (strlen($this->search) > 3) {
         $query->where('users.name', 'LIKE', "%{$this->search}%");
     }
-    return $query->orderBy('users.created_at', 'desc')->paginate(10);
+    return $query->orderBy('roles.name')->orderByDesc('users.created_at')->paginate(10);
 }]);
 
 /**
@@ -37,6 +42,10 @@ with(fn() => ['users' => function () {
  * @return void
  */
 $submit = function () {
+
+    if(!auth()->user()->hasRole('super-admin')) {
+        return;
+    }
 
     $validated = $this->validate();
 
@@ -56,10 +65,33 @@ $submit = function () {
  * @return void
  */
 $activateUser = function ($id) {
+
+    if(!auth()->user()->hasRole('super-admin')) {
+        return;
+    }
+
     $user = User::find($id);
     $user->active = !$user->active;
     $user->save();
-}
+};
+
+/**
+ * Switch user to admin
+ *
+ * @param $id {number}
+ * @return void
+ */
+$switchUserToAdmin = function ($id) {
+
+    if(!auth()->user()->hasRole('super-admin')) {
+        return;
+    }
+
+    $user = User::find($id);
+    $user->removeRole('user');
+    $user->assignRole('super-admin');
+    $user->save();
+};
 
 ?>
 
@@ -103,7 +135,10 @@ $activateUser = function ($id) {
                         </td>
                         <td>
                             @if($row->role === 'user')
-                                <div class="flex justify-end align-items-center">
+                                <div class="flex justify-end align-items-center gap-2">
+                                    <x-primary-button class="gap-1" wire:click="switchUserToAdmin({{ $row->id }})">
+                                        switch to admin
+                                    </x-primary-button>
                                     <x-primary-button class="gap-1" wire:click="activateUser({{ $row->id }})">
                                         {{ $row->active ? 'suspend' : 'activate' }}
                                     </x-primary-button>

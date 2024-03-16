@@ -76,6 +76,10 @@ mount(function () {
 
 $submitApprove = function () {
 
+    if(!auth()->user()->hasRole('super-admin')) {
+        return;
+    }
+
     try {
         DB::beginTransaction();
 
@@ -104,6 +108,10 @@ $submitApprove = function () {
 };
 
 $submitTopUp = function () {
+
+    if(!auth()->user()->hasRole('user')) {
+        return;
+    }
 
     // If not pack selected fire error
     if ($this->pack == null || !in_array($this->pack, ['1', '2', '3', '4'])) {
