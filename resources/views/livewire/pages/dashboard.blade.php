@@ -340,7 +340,7 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                         <span
                             class="text-md text-gray-600">charge your balance in order to create new assignments</span>
                     </p>
-                    <x-primary-button @click="modalOpen=true"
+                    <x-primary-button @click="modalTopUp=true"
                                       class="bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-700 active:bg-indigo-700 focus:ring-indigo-700">
                         <svg class="w-6 h-6 me-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                              stroke-width="1.5" stroke="currentColor">
