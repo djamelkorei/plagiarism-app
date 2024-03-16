@@ -194,21 +194,16 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
 
         <x-card-widget title="Revenue" description="DZD {{ number_format($aggregation->total_value, 2) }}">
             <x-slot:icon>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     class="h-8 w-8 text-muted-foreground">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                 </svg>
             </x-slot:icon>
         </x-card-widget>
 
         <x-card-widget title="Assignments" :description="$aggregation->total_files">
             <x-slot:icon>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     class="h-8 w-8 text-muted-foreground">
-                    <rect width="20" height="14" x="2" y="5" rx="2"></rect>
-                    <path d="M2 10h20"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
             </x-slot:icon>
         </x-card-widget>
@@ -232,7 +227,6 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
-
             </x-slot:icon>
         </x-card-widget>
 
@@ -300,9 +294,9 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                         <td>
                             <div class="flex justify-end">
                                 @if($row->status  === BalanceLineStatus::APPROVED)
-                                    <span class="text-gray-500 w-[135px] pl-4">claimed</span>
+                                    <span class="text-gray-500">claimed</span>
                                 @elseif($row->status  === BalanceLineStatus::REFUSED)
-                                    <span class="text-gray-500 w-[135px] pl-4">ignored</span>
+                                    <span class="text-gray-500">ignored</span>
                                 @else
                                     @can('users.index')
                                         <x-primary-button
