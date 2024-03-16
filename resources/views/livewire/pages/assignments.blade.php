@@ -30,7 +30,7 @@ state([
 
 rules([
     'title' => 'required',
-    'file' => 'required|file|mimes:pdf',
+    'file' => 'required|file|mimes:pdf|max:5000',
 ]);
 
 with(fn() => ['assignments' => function () {
@@ -139,7 +139,7 @@ $resetFile = function () {
                         <td class="md:w-[300px]">{{ $row->title }}</td>
                         <td>{{ $row->posted_at->format('Y-m-d H:i') ?? '-' }}</td>
                         <td>
-                            <x-badge class="{{ $row->status === AssignmentStatus::COMPLETED ? 'bg-emerald-300' : 'bg-orange-300'  }}">
+                            <x-badge class="{{ $row->status === AssignmentStatus::COMPLETED ? 'bg-emerald-300' : ($row->status === AssignmentStatus::PROCESSING ? 'bg-orange-300' : 'bg-gray-300')  }}">
                                 {{ $row->status }}
                             </x-badge>
                         </td>
