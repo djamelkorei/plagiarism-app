@@ -278,7 +278,7 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                     <th class="w-[200px]">VALUE</th>
                     <th class="w-[200px]">DATE</th>
                     <th class="w-[100px]">STATUS</th>
-                    <th>ACTIONS</th>
+                    <th class="text-end">ACTIONS</th>
                 </tr>
                 </thead>
                 <tbody class="relative">
@@ -304,7 +304,7 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                             </x-badge>
                         </td>
                         <td>
-                            <div class="flex">
+                            <div class="flex justify-end">
                                 @if($row->status  === BalanceLineStatus::APPROVED)
                                     <span class="text-gray-500 w-[135px] pl-4">claimed</span>
                                 @elseif($row->status  === BalanceLineStatus::REFUSED)

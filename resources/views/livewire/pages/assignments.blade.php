@@ -121,9 +121,9 @@ $resetFile = function () {
                     @endcan
                     <th>TITLE</th>
                     <th class="w-[200px]">POSTED DATE</th>
-                    <th class="w-[200px]">ISSUED DATE</th>
-                    <th class="text-center">STATUS</th>
-                    <th>ACTIONS</th>
+                    <th>STATUS</th>
+                    <th>SIMILARITY</th>
+                    <th class="text-end">ACTIONS</th>
                 </tr>
                 </thead>
                 <tbody class="relative">
@@ -138,14 +138,22 @@ $resetFile = function () {
                         @endcan
                         <td class="md:w-[300px]">{{ $row->title }}</td>
                         <td>{{ $row->posted_at->format('Y-m-d H:i') ?? '-' }}</td>
-                        <td>{{ isset($row) ? '-' : $row->issued_at->format('Y-m-d H:i')}}</td>
                         <td>
                             <x-badge class="{{ $row->status === AssignmentStatus::COMPLETED ? 'bg-emerald-300' : 'bg-orange-300'  }}">
                                 {{ $row->status }}
                             </x-badge>
                         </td>
+                        <td class="font-bold">
+                            @if($row->status  === AssignmentStatus::COMPLETED)
+                                <x-badge class="bg-gray-300">
+                                    {{ $row->similarity }}%
+                                </x-badge>
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>
-                            <div class="flex justify-center align-items-center">
+                            <div class="flex justify-end align-items-center">
                                 @if($row->status  === AssignmentStatus::COMPLETED)
                                     <x-link-button
                                         href="{{ route('assignments.download', ['assignmentId' => $row->id]) }}"
@@ -160,7 +168,7 @@ $resetFile = function () {
                                         </svg>
                                     </x-link-button>
                                 @else
-                                    <span class="text-gray-500 w-[135px]">not available</span>
+                                    <span class="text-gray-500">not available</span>
                                 @endif
                             </div>
                         </td>
