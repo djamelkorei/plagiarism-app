@@ -102,7 +102,7 @@ $switchUserToAdmin = function ($id) {
 <x-container x-data="{ modalCreateUser: false }">
 
     <div class="flex align-items-center mb-4 gap-4 justify-between">
-        <x-primary-button @click="modalCreateUser=true">Create</x-primary-button>
+        <x-primary-button @click="modalCreateUser=true">add user</x-primary-button>
         <x-filter-search-input model="search" class="w-[30%]"/>
     </div>
 
