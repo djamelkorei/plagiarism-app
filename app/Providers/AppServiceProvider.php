@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('*', function () {
             if (Auth::check()) {
-                View::share('notifications', Auth::user()->unreadNotifications);
+               //  View::share('notifications', Auth::user()->unreadNotifications);
             }
         });
 

@@ -34,14 +34,16 @@ rules([
 ]);
 
 with(fn() => ['assignments' => function () {
-    $query = Assignment::select('*');
+    $query = Assignment::selectRaw('assignments.*, users.name as user_name')
+        ->leftJoin('users', 'users.id', '=', 'assignments.user_id');
+
     if (strlen($this->search) > 3) {
-        $query->where('title', 'LIKE', "%{$this->search}%");
+        $query->where('assignments.title', 'LIKE', "%{$this->search}%");
     }
     if (Auth::user()->hasRole('user')) {
-        $query->where('user_id', Auth::user()->id);
+        $query->where('assignments.user_id', Auth::user()->id);
     }
-    return $query->orderBy('posted_at', 'desc')->paginate(10);
+    return $query->orderBy('assignments.posted_at', 'desc')->paginate(10);
 }]);
 
 /**
@@ -102,11 +104,11 @@ $resetFile = function () {
 
     <div class="flex align-items-center mb-4 gap-4 justify-between">
 
-        @can('users.index')
+        @role('super-admin')
             <x-link-button href="{{ route('dashboard') }}">Dashboard</x-link-button>
-        @elsecannot('users.index')
+        @elserole('user')
             <x-primary-button @click="modalCreateAssignment=true">add assignment</x-primary-button>
-        @endcan
+        @endrole
 
         <x-filter-search-input model="search" class="w-[30%]"/>
     </div>
@@ -116,9 +118,9 @@ $resetFile = function () {
             <table>
                 <thead>
                 <tr>
-                    @can('users.index')
+                    @role('super-admin')
                         <th>USER</th>
-                    @endcan
+                    @endrole
                     <th>TITLE</th>
                     <th class="w-[200px]">POSTED DATE</th>
                     <th>STATUS</th>
@@ -130,12 +132,12 @@ $resetFile = function () {
 
                 @foreach($assignments as $row)
                     <tr>
-                        @can('users.index')
+                        @role('super-admin')
                             <td class="md:w-[300px]">
                                 <a href="#"
-                                   class="capitalize font-bold underline text-indigo-800">{{ $row->user->name }}</a>
+                                   class="capitalize font-bold underline text-indigo-800">{{ $row->user_name }}</a>
                             </td>
-                        @endcan
+                        @endrole
                         <td class="md:w-[300px]">{{ $row->title }}</td>
                         <td>{{ $row->posted_at->format('Y-m-d H:i') ?? '-' }}</td>
                         <td>

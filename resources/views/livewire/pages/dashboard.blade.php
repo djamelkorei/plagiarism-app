@@ -68,9 +68,9 @@ mount(function () {
         $this->aggregation->total_files = Assignment::where('user_id', Auth::user()->id)->count();
     }
     if (Auth::user()->hasRole('super-admin')) {
-        $this->aggregation->total_users = User::all()->count();
+        $this->aggregation->total_users = User::count();
         $this->aggregation->total_value = Balance::sum('total_value');
-        $this->aggregation->total_files = Assignment::all()->count();
+        $this->aggregation->total_files = Assignment::count();
     }
 });
 
@@ -281,12 +281,12 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
 
                 @foreach($assignments as $row)
                     <tr>
-                        @can('users.index')
+                        @role('super-admin')
                             <td class="md:w-[300px]">
                                 <a href="#"
                                    class="capitalize font-bold underline text-indigo-800">{{ $row->user_name }}</a>
                             </td>
-                        @endcan
+                        @endrole
                         <td class="md:w-[300px]">{{ $row->credit }}</td>
                         <td class="md:w-[300px] @if($row->status  === BalanceLineStatus::APPROVED) text-green-700 @elseif($row->status  === BalanceLineStatus::PENDING) text-gray-600 @else line-through @endif">
                             <span
@@ -306,13 +306,13 @@ $beforeOpenModelApprove = function ($id, $user, $value, $credit, $date, $balance
                                 @elseif($row->status  === BalanceLineStatus::REFUSED)
                                     <span class="text-gray-500">ignored</span>
                                 @else
-                                    @can('users.index')
+                                    @role('super-admin')
                                         <x-primary-button
                                             wire:click="beforeOpenModelApprove({{ $row->id . ',\''. $row->user_name . '\','. $row->value . ','. $row->credit . ',\''. $row->created_at->format('Y-m-d H:i') .'\','.  $row->balance_id }})"
                                             class="gap-1">
                                             <span>approve</span>
                                         </x-primary-button>
-                                    @endcan
+                                    @endrole
                                 @endif
                             </div>
                         </td>
