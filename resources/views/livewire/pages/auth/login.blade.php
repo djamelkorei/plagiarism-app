@@ -18,7 +18,8 @@ $login = function () {
 
     Session::regenerate();
 
-    $this->redirectIntended(default: RouteServiceProvider::HOME, navigate: true);
+    $redirectTo = auth()->user()->hasRole('user') ? '/assignments' : RouteServiceProvider::HOME;
+    $this->redirectIntended(default: $redirectTo, navigate: true);
 };
 
 ?>
@@ -48,23 +49,33 @@ $login = function () {
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+        <div class="flex items-center justify-between mt-4">
+            <div class="block">
+                <label for="remember" class="inline-flex items-center">
+                    <input wire:model="form.remember" id="remember" type="checkbox" class="cursor-pointer rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                    <span class="ms-2 text-sm text-gray-600 cursor-pointer">{{ __('Remember me') }}</span>
+                </label>
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ms-3">
+        <div class="flex mt-4">
+            <x-primary-button class="w-full justify-center">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <div class="relative block mt-5">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
+        </div>
+
+        <p class="pt-4">If you don't have an account, <a class="font-bold text-indigo-700 underline underline-offset-4 hover:text-primary" href="{{ route('register') }}">sign up</a> first.</p>
+
     </form>
+
 </div>

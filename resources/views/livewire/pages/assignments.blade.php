@@ -210,7 +210,10 @@ $resetFile = function () {
                 >
                     <x-input-label for="email" :value="__('Document')" class="mb-2"/>
                     <div class="flex items-center justify-center w-full mb-2">
-                        <label for="file"
+                        <label :for="isUploading ? ''  : 'file'"
+                               wire:target="file"
+                               wire:loading.class="bg-gray-50"
+                               wire:loading.class.remove="border-dashed cursor-pointer hover:bg-indigo-50"
                                class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300  rounded-lg  @if($file)  bg-gray-50 @else border-dashed cursor-pointer hover:bg-indigo-50 @endif">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                 <svg class="w-8 h-8 mb-4" aria-hidden="true"

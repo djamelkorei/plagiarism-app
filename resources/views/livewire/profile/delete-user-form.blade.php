@@ -11,6 +11,8 @@ state(['password' => '']);
 rules(['password' => ['required', 'string', 'current_password']]);
 
 $deleteUser = function (Logout $logout) {
+    return;
+
     $this->validate();
 
     tap(Auth::user(), $logout(...))->delete();

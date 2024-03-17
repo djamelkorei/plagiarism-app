@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Balance;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -35,13 +36,20 @@ $register = function () {
 
     Auth::login($user);
 
-    $this->redirect(RouteServiceProvider::HOME, navigate: true);
+    $user->assignRole('user');
+
+    Balance::create([
+        'user_id' => $user->id
+    ]);
+
+    $this->redirect('/assignments', navigate: true);
 };
 
 ?>
 
 <div>
     <form wire:submit="register">
+
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -79,14 +87,17 @@ $register = function () {
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}" wire:navigate>
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
+        <div class="flex mt-4">
+            <x-primary-button class="w-full justify-center">
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+
+        <div class="relative block mt-5">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
+        </div>
+
+        <p class="pt-4">Already registered, <a class="font-bold text-indigo-700 underline underline-offset-4 hover:text-primary" href="{{ route('login') }}">login</a> then.</p>
+
     </form>
 </div>
