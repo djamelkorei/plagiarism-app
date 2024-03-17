@@ -25,13 +25,20 @@ state([
     'file' => '',
     // Others
     'search' => '',
-    'modalEventClose' => 'close-modal-create-assignment'
+    'modalEventClose' => 'close-modal-create-assignment',
+    'credit' => ''
 ]);
 
 rules([
     'title' => 'required',
     'file' => 'required|file|mimes:pdf|max:5000',
 ]);
+
+mount(function () {
+    if(auth()->user()->hasRole('user')) {
+       $this->credit = Balance::where('user_id', auth()->user()->id)->first()->credit;
+    }
+});
 
 with(fn() => ['assignments' => function () {
     $query = Assignment::selectRaw('assignments.*, users.name as user_name')
@@ -101,6 +108,14 @@ $resetFile = function () {
 </x-slot:header>
 
 <x-container x-data="{ modalCreateAssignment: false }">
+
+    @role('user')
+        @if($credit == 0)
+            <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
+                <span class="font-medium">Your credit is 0 charge your balance now <x-link-button href="{{ route('dashboard') }}" class="ms-2">top-up now</x-link-button> </span>
+            </div>
+        @endif
+    @endrole
 
     <div class="flex align-items-center mb-4 gap-4 justify-between">
 
