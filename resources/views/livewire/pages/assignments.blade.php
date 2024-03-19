@@ -31,7 +31,7 @@ state([
 
 rules([
     'title' => 'required',
-    'file' => 'required|file|mimes:pdf|max:5000',
+    'file' => 'required|file|mimes:pdf|max:50000',
 ]);
 
 mount(function () {
