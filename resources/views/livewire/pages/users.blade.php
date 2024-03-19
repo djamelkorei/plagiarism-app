@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Models\{User, Balance};
 use Illuminate\Support\Facades\Hash;
 use function Livewire\Volt\{layout, rules, state, mount, form, with, usesFileUploads, usesPagination};
 
@@ -53,6 +53,10 @@ $submit = function () {
     $validated['active'] = true;
     $user = User::create($validated);
     $user->assignRole('user');
+
+    Balance::create([
+        'user_id' => $user->id
+    ]);
 
     $this->reset('name', 'email');
     $this->dispatch($this->modalEventClose);
