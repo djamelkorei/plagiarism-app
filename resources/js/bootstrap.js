@@ -18,7 +18,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import {io} from 'socket.io-client';
 if(window.reference_id) {
     const btn = document.querySelector('#refresh-data-btn');
-    const socket = io( import.meta.env.PROD ? import.meta.env.VITE_API_HOST : "http://localhost:3000");
+    const socket = io( import.meta.env.PROD ? import.meta.env.VITE_SCRAPER_HOST : "http://localhost:3000");
     socket.on(`notification_${window.reference_id}_new_assignment`, message => {
         btn.click();
     })
