@@ -1,9 +1,7 @@
 <?php
 
 use App\Models\Assignment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -23,18 +21,6 @@ use Livewire\Volt\Volt;
 Route::get('/', function () {
     return Redirect::to('/login');
 })->middleware('guest');
-
-Route::get('/assignments/{assignmentId}/webhook', function (Request $request, $assignmentId) {
-    if($request->hasHeader('x-token')
-        && config('scraper.api_key') == $request->header('x-token')
-        && $assignmentId != null) {
-        $assignment = Assignment::find($assignmentId);
-        if(isset($assignment)) {
-            return response()->json([ 'res' => 'success', 'id' => $assignment->id]);
-        }
-    }
-    return response()->json([ 'res' => 'error']);
-})->name('assignments.webhook');
 
 Route::middleware('auth')->group(function () {
     Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
@@ -56,6 +42,5 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:super-admin')
         ->name('users');
 });
-
 
 require __DIR__ . '/auth.php';

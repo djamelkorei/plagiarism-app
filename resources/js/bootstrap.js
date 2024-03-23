@@ -19,7 +19,7 @@ import {io} from 'socket.io-client';
 if(window.reference_id) {
     const btn = document.querySelector('#refresh-data-btn');
     const socket = io( import.meta.env.PROD ? import.meta.env.VITE_API_HOST : "http://localhost:3000");
-    socket.on(`notification_assignment_${window.reference_id}`, message => {
+    socket.on(`notification_${window.reference_id}_new_assignment`, message => {
         btn.click();
     })
 }
