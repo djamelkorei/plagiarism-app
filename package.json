@@ -15,6 +15,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "alpinejs": "^3.13.5"
+        "alpinejs": "^3.13.5",
+        "socket.io-client": "^4.7.5"
     }
 }

@@ -15,6 +15,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
+import {io} from 'socket.io-client';
+if(window.reference_id) {
+    const btn = document.querySelector('#refresh-data-btn');
+    const socket = io( import.meta.env.PROD ? import.meta.env.VITE_API_HOST : "http://localhost:3000");
+    socket.on(`notification_assignment_${window.reference_id}`, message => {
+        btn.click();
+    })
+}
+
 // import Echo from 'laravel-echo';
 
 // import Pusher from 'pusher-js';

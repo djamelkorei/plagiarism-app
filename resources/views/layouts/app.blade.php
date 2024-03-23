@@ -35,4 +35,9 @@
             </main>
         </div>
     </body>
+    @auth()
+        <script>
+            window.reference_id = {{ Js::from(auth()->user()->id) }}
+        </script>
+    @endauth
 </html>

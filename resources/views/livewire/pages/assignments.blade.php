@@ -54,6 +54,16 @@ with(fn() => ['assignments' => function () {
 }]);
 
 /**
+ * Refresh Data
+ *
+ * @return void
+ */
+$refreshData = function()
+{
+    $this->resetPage();
+};
+
+/**
  * Submit Form
  *
  * @return void
@@ -137,6 +147,7 @@ $resetFile = function () {
     </div>
 
     <x-card>
+        <button id="refresh-data-btn" class="hidden" wire:click="refreshData"></button>
         <div class="h-[525px] mb-3">
             <table>
                 <thead>
