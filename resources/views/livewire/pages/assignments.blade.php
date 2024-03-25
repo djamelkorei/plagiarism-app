@@ -32,7 +32,7 @@ state([
 
 rules([
     'title' => 'required',
-    'file' => 'required|file|mimes:pdf|max:50000',
+    'file' => 'required|file|mimes:doc,docx,ppt,pptx,wpd,ps,pdf,html,htm,rtf,odt,hwp,gdoc,gdocx,txt|max:50000',
 ]);
 
 mount(function () {
@@ -282,13 +282,13 @@ $resetFile = function () {
                                     <p class="mb-2 text-sm"><span
                                             class="font-semibold">Click to upload</span> or drag and drop
                                     </p>
-                                    <p class="text-xs">PDF File</p>
+                                    <p class="text-xs px-20 text-center">Microsoft Word, PowerPoint, WordPerfect, PostScript, PDF, HTML, RTF, OpenOffice (ODT), Hangul (HWP), Google Docs, and plain text files</p>
                                 @endif
 
                             </div>
                             <input wire:model="file" @if($file) readonly disabled @endif id="file"
                                    type="file"
-                                   accept="application/pdf"
+                                   accept=".doc, .docx, .ppt, .pptx, .wpd, .ps, .pdf, .html, .htm, .rtf, .odt, .hwp, .gdoc, .gdocx, .txt"
                                    class="hidden"/>
                         </label>
                     </div>
